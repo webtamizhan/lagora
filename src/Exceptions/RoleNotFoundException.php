@@ -4,6 +4,7 @@
 namespace Webtamizhan\Lagora\Exceptions;
 
 use Exception;
+
 class RoleNotFoundException extends Exception
 {
     public static function roleNotFound(int $role)

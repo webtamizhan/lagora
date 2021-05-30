@@ -15,7 +15,7 @@ class Message
         $date = new \DateTime("now", new \DateTimeZone('UTC'));
         $this->ts = $date->getTimestamp() + 24 * 3600;
 
-        $this->privileges = array();
+        $this->privileges = [];
     }
 
     public function packContent()
@@ -27,6 +27,7 @@ class Message
             $buffer = array_merge($buffer, unpack("C*", pack("v", $key)));
             $buffer = array_merge($buffer, unpack("C*", pack("V", $value)));
         }
+
         return $buffer;
     }
 
@@ -40,7 +41,7 @@ class Message
         $size = unpack("v", substr($msg, $pos, 2))[1];
         $pos += 2;
 
-        $privileges = array();
+        $privileges = [];
         for ($i = 0; $i < $size; $i++) {
             $key = unpack("v", substr($msg, $pos, 2));
             $pos += 2;
