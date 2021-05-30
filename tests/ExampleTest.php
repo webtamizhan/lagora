@@ -1,6 +1,6 @@
 <?php
 
-namespace VendorName\Skeleton\Tests;
+namespace Webtamizhan\Lagora\Tests;
 
 class ExampleTest extends TestCase
 {

@@ -1,12 +1,12 @@
 <?php
 
-namespace VendorName\Skeleton\Commands;
+namespace Webtamizhan\Lagora\Commands;
 
 use Illuminate\Console\Command;
 
-class SkeletonCommand extends Command
+class LagoraCommand extends Command
 {
-    public $signature = 'skeleton';
+    public $signature = 'lagora';
 
     public $description = 'My command';
 
