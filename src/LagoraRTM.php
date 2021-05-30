@@ -3,7 +3,6 @@
 namespace Webtamizhan\Lagora;
 
 use Exception;
-use Webtamizhan\Lagora\Agora\RtcTokenBuilder;
 use Webtamizhan\Lagora\Agora\RtmTokenBuilder;
 use Webtamizhan\Lagora\Exceptions\AgoraConfigurationNotFoundException;
 use Webtamizhan\Lagora\Exceptions\InvalidChannelNameException;
