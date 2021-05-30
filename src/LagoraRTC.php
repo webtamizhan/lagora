@@ -31,8 +31,8 @@ class LagoraRTC
      */
     public function __construct()
     {
-        $this->app_id = config('lagora.rtc.app_id','');
-        $this->app_certificate = config('lagora.rtc.app_certificate','');
+        $this->app_id = config('lagora.rtc.app_id', '');
+        $this->app_certificate = config('lagora.rtc.app_certificate', '');
         if (empty($this->app_id) || empty($this->app_certificate)) {
             throw AgoraRtcConfigurationNotFoundException::rtcNotConfigured();
         }
@@ -45,6 +45,7 @@ class LagoraRTC
     public function setChannelName(string $channelName): LagoraRTC
     {
         $this->channelName = $channelName;
+
         return $this;
     }
 
@@ -56,10 +57,11 @@ class LagoraRTC
      */
     public function setRole(int $role = 1): LagoraRTC
     {
-        if(!in_array($role,[0,1,2,101])){
+        if (! in_array($role, [0,1,2,101])) {
             throw RoleNotFoundException::roleNotFound($role);
         }
         $this->role = $role;
+
         return $this;
     }
 
@@ -70,6 +72,7 @@ class LagoraRTC
     public function setUserID(int $userID): LagoraRTC
     {
         $this->userID = $userID;
+
         return $this;
     }
 
@@ -80,6 +83,7 @@ class LagoraRTC
     public function setMinutes(int $minutes): LagoraRTC
     {
         $this->minutes = $minutes;
+
         return $this;
     }
 
@@ -90,6 +94,7 @@ class LagoraRTC
     public function setSeconds(int $seconds): LagoraRTC
     {
         $this->seconds = $seconds;
+
         return $this;
     }
 
@@ -99,7 +104,7 @@ class LagoraRTC
      */
     public function getToken() : LagoraRTC
     {
-        if(empty($this->channelName)){
+        if (empty($this->channelName)) {
             throw InvalidChannelNameException::invalidChannelName($this->channelName);
         }
         $expireInSeconds = $this->minutes * 60 + $this->seconds;
@@ -107,9 +112,14 @@ class LagoraRTC
         $privilegeExpiredTs = $currentTimestamp + $expireInSeconds;
 
         $this->token = RtcTokenBuilder::buildTokenWithUid(
-            $this->app_id, $this->app_certificate, $this->channelName, $this->userID, $this->role, $privilegeExpiredTs
+            $this->app_id,
+            $this->app_certificate,
+            $this->channelName,
+            $this->userID,
+            $this->role,
+            $privilegeExpiredTs
         );
+
         return $this;
     }
-
 }

@@ -14,17 +14,18 @@ $IN_CHANNEL_PERMISSION = 4;
 
     function generateRecordingKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs)
     {
-        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $GLOBALS["RECORDING_SERVICE"], array());
+        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $GLOBALS["RECORDING_SERVICE"], []);
     }
 
     function generateMediaChannelKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs)
     {
-        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $GLOBALS["MEDIA_CHANNEL_SERVICE"], array());
+        return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $GLOBALS["MEDIA_CHANNEL_SERVICE"], []);
     }
 
     function generateInChannelPermissionKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $permission)
     {
         $extra[$GLOBALS["ALLOW_UPLOAD_IN_CHANNEL"]] = $permission;
+
         return generateDynamicKey($appID, $appCertificate, $channelName, $ts, $randomInt, $uid, $expiredTs, $GLOBALS["IN_CHANNEL_PERMISSION"], $extra);
     }
 
@@ -53,7 +54,7 @@ $IN_CHANNEL_PERMISSION = 4;
         foreach ($extra as $key => $value) {
             $buffer .= pack("S", $key);
             $buffer .= pack("S", strlen($value)) . $value;
-        } 
+        }
 
         return strtoupper(hash_hmac('sha1', $buffer, $rawAppCertificate));
     }
@@ -76,9 +77,7 @@ $IN_CHANNEL_PERMISSION = 4;
         foreach ($extra as $key => $value) {
             $buffer .= pack("S", $key);
             $buffer .= packString($value);
-        } 
+        }
 
         return $buffer;
     }
-
-?>
