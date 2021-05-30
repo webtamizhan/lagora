@@ -3,7 +3,6 @@
 
 namespace Webtamizhan\Lagora\Exceptions;
 
-
 use Exception;
 
 class CloudRecordingBucketConfigurationNotFoundException extends Exception

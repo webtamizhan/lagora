@@ -3,9 +3,7 @@
 
 namespace Webtamizhan\Lagora;
 
-
 use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Str;
 use Webtamizhan\Lagora\Exceptions\AgoraConfigurationNotFoundException;
 use Webtamizhan\Lagora\Exceptions\CloudRecordingAcquireException;
 use Webtamizhan\Lagora\Exceptions\CloudRecordingBucketConfigurationNotFoundException;
@@ -58,26 +56,27 @@ class LagoraCloudRecording
      * @throws CloudRecordingBucketConfigurationNotFoundException
      * @throws CloudRecordingConfigurationNotFoundException
      */
-    public function __construct(){
-        $this->app_id = config('lagora.rtc.app_id','');
-        if(empty($this->app_id)){
+    public function __construct()
+    {
+        $this->app_id = config('lagora.rtc.app_id', '');
+        if (empty($this->app_id)) {
             throw AgoraConfigurationNotFoundException::rtcNotConfigured();
         }
         $this->endPoint = "https://api.agora.io/v1/apps/" . $this->app_id . "/cloud_recording";
-        $this->customerID = config('lagora.cloud_recording.customer_id','');
-        $this->customerCertificate = config('lagora.cloud_recording.customer_certificate','');
-        if(empty($this->customerID) || empty($this->customerCertificate)){
+        $this->customerID = config('lagora.cloud_recording.customer_id', '');
+        $this->customerCertificate = config('lagora.cloud_recording.customer_certificate', '');
+        if (empty($this->customerID) || empty($this->customerCertificate)) {
             throw CloudRecordingConfigurationNotFoundException::notFound();
         }
 
         //Bucket config
-        $this->vendor = config('lagora.cloud_recording.storageConfig.vendor','');
-        $this->region = config('lagora.cloud_recording.storageConfig.region','');
-        $this->bucket = config('lagora.cloud_recording.storageConfig.bucket','');
-        $this->accessKey = config('lagora.cloud_recording.storageConfig.accessKey','');
-        $this->secretKey = config('lagora.cloud_recording.storageConfig.secretKey','');
-        $this->fileNamePrefix = config('lagora.cloud_recording.storageConfig.fileNamePrefix',[]);
-        if(empty($this->vendor) || empty($this->region) || empty($this->bucket) || empty($this->accessKey) || empty($this->secretKey)){
+        $this->vendor = config('lagora.cloud_recording.storageConfig.vendor', '');
+        $this->region = config('lagora.cloud_recording.storageConfig.region', '');
+        $this->bucket = config('lagora.cloud_recording.storageConfig.bucket', '');
+        $this->accessKey = config('lagora.cloud_recording.storageConfig.accessKey', '');
+        $this->secretKey = config('lagora.cloud_recording.storageConfig.secretKey', '');
+        $this->fileNamePrefix = config('lagora.cloud_recording.storageConfig.fileNamePrefix', []);
+        if (empty($this->vendor) || empty($this->region) || empty($this->bucket) || empty($this->accessKey) || empty($this->secretKey)) {
             throw CloudRecordingBucketConfigurationNotFoundException::notFound();
         }
     }
@@ -89,6 +88,7 @@ class LagoraCloudRecording
     public function setAccessChannel($channelName): LagoraCloudRecording
     {
         $this->accessChannel = $channelName;
+
         return $this;
     }
 
@@ -99,6 +99,7 @@ class LagoraCloudRecording
     public function setToken($token): LagoraCloudRecording
     {
         $this->token = $token;
+
         return $this;
     }
 
@@ -108,6 +109,7 @@ class LagoraCloudRecording
     public function setResourceID($resourceID): LagoraCloudRecording
     {
         $this->resourceID = $resourceID;
+
         return $this;
     }
 
@@ -117,6 +119,7 @@ class LagoraCloudRecording
     public function setSid($sid): LagoraCloudRecording
     {
         $this->sid = $sid;
+
         return $this;
     }
 
@@ -127,6 +130,7 @@ class LagoraCloudRecording
     public function setRecordingUID($recordingUID): LagoraCloudRecording
     {
         $this->recordingUID = $recordingUID;
+
         return $this;
     }
 
@@ -137,6 +141,7 @@ class LagoraCloudRecording
     public function setMode(string $mode): LagoraCloudRecording
     {
         $this->mode = $mode;
+
         return $this;
     }
 
@@ -148,18 +153,17 @@ class LagoraCloudRecording
      */
     public function startRecordingCall()
     {
-
-        if(empty($this->accessChannel)){
+        if (empty($this->accessChannel)) {
             throw InvalidChannelNameException::invalidChannelName($this->accessChannel);
         }
-        if(empty($this->token)){
+        if (empty($this->token)) {
             throw InvalidTokenException::invalidToken($this->token);
         }
-        if(empty($this->mode)){
+        if (empty($this->mode)) {
             self::setMode(config('lagora.cloud_recording.recording_mode'));
         }
-        if(empty($this->recordingUID)){
-            self::setRecordingUID(rand(1111,9999));
+        if (empty($this->recordingUID)) {
+            self::setRecordingUID(rand(1111, 9999));
         }
 
         //acquire resource id in-order to start recording call
@@ -170,8 +174,8 @@ class LagoraCloudRecording
                 "cname" => (string)$this->accessChannel,
                 "uid" => (string)$this->recordingUID,
                 "clientRequest" => [
-                    "resourceExpiredHour" => config('lagora.resourceExpiredHour',24)
-                ]
+                    "resourceExpiredHour" => config('lagora.resourceExpiredHour', 24),
+                ],
             ]);
 
         if ($response->successful()) {
@@ -191,9 +195,9 @@ class LagoraCloudRecording
                         "bucket" => (string)$this->bucket,
                         "accessKey" => $this->accessKey,
                         "secretKey" => $this->secretKey,
-                        "fileNamePrefix" => $this->fileNamePrefix
-                    ]
-                ]
+                        "fileNamePrefix" => $this->fileNamePrefix,
+                    ],
+                ],
             ];
 
             //if everything ok, start a call
@@ -204,7 +208,6 @@ class LagoraCloudRecording
                 ->post($this->endPoint . '/resourceid/' . $this->resourceID . "/mode/".$this->mode."/start", $call_array);
 
             if ($callResponse->successful()) {
-
                 $this->sid = $callResponse->json()['sid'];
 
                 $cloud_record = new CloudRecording();
@@ -216,16 +219,15 @@ class LagoraCloudRecording
                 $cloud_record->save();
 
                 $this->cloudRecording = $cloud_record;
+
                 return $this;
             } else {
                 throw CloudRecordingStartCallException::exception($response->body());
             }
-
         } else {
             throw CloudRecordingAcquireException::acquireException($response->body());
         }
     }
-
 
     /**
      * @throws CloudRecordingStopCallException
@@ -240,8 +242,8 @@ class LagoraCloudRecording
                 "cname" => (string)$this->accessChannel,
                 "uid" => (string)$this->recordingUID,
                 "clientRequest" => [
-                    "resourceExpiredHour" => config('lagora.resourceExpiredHour',24)
-                ]
+                    "resourceExpiredHour" => config('lagora.resourceExpiredHour', 24),
+                ],
             ]);
         if ($response->successful()) {
             return $this;

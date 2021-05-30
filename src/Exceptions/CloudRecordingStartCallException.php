@@ -3,7 +3,6 @@
 
 namespace Webtamizhan\Lagora\Exceptions;
 
-
 use Exception;
 
 class CloudRecordingStartCallException extends Exception
