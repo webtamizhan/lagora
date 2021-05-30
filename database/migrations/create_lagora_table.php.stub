@@ -8,11 +8,13 @@ return new class extends Migration
 {
     public function up()
     {
-        Schema::create('lagora_table', function (Blueprint $table) {
+        Schema::create("cloud_recordings", function (Blueprint $table) {
             $table->id();
-
-            // add fields
-
+            $table->string('channel_name')->nullable();
+            $table->string('token')->nullable();
+            $table->string('channel_user_id')->nullable();
+            $table->string('resource_id')->nullable();
+            $table->string('sid')->nullable();
             $table->timestamps();
         });
     }
