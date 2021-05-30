@@ -4,11 +4,12 @@ namespace Webtamizhan\Lagora;
 
 use Exception;
 use Webtamizhan\Lagora\Agora\RtcTokenBuilder;
+use Webtamizhan\Lagora\Agora\RtmTokenBuilder;
 use Webtamizhan\Lagora\Exceptions\AgoraConfigurationNotFoundException;
 use Webtamizhan\Lagora\Exceptions\InvalidChannelNameException;
 use Webtamizhan\Lagora\Exceptions\RoleNotFoundException;
 
-class LagoraRTC
+class LagoraRTM
 {
     public $app_id;
 
@@ -31,8 +32,8 @@ class LagoraRTC
      */
     public function __construct()
     {
-        $this->app_id = config('lagora.rtc.app_id', '');
-        $this->app_certificate = config('lagora.rtc.app_certificate', '');
+        $this->app_id = config('lagora.rtm.app_id', '');
+        $this->app_certificate = config('lagora.rtm.app_certificate', '');
         if (empty($this->app_id) || empty($this->app_certificate)) {
             throw AgoraConfigurationNotFoundException::rtcNotConfigured();
         }
@@ -40,9 +41,9 @@ class LagoraRTC
 
     /**
      * @param string $channelName
-     * @return LagoraRTC
+     * @return LagoraRTM
      */
-    public function setChannelName(string $channelName): LagoraRTC
+    public function setChannelName(string $channelName): LagoraRTM
     {
         $this->channelName = $channelName;
 
@@ -51,11 +52,11 @@ class LagoraRTC
 
     /**
      * @param int $role
-     * @return LagoraRTC
+     * @return LagoraRTM
      * @throws RoleNotFoundException
      * RoleAttendee = 0; RolePublisher = 1; RoleSubscriber = 2; RoleAdmin = 101;
      */
-    public function setRole(int $role = 1): LagoraRTC
+    public function setRole(int $role = 1): LagoraRTM
     {
         if (! in_array($role, [0,1,2,101])) {
             throw RoleNotFoundException::roleNotFound($role);
@@ -67,9 +68,9 @@ class LagoraRTC
 
     /**
      * @param int $userID
-     * @return LagoraRTC
+     * @return LagoraRTM
      */
-    public function setUserID(int $userID): LagoraRTC
+    public function setUserID(int $userID): LagoraRTM
     {
         $this->userID = $userID;
 
@@ -78,9 +79,9 @@ class LagoraRTC
 
     /**
      * @param int $minutes
-     * @return LagoraRTC
+     * @return LagoraRTM
      */
-    public function setMinutes(int $minutes): LagoraRTC
+    public function setMinutes(int $minutes): LagoraRTM
     {
         $this->minutes = $minutes;
 
@@ -89,9 +90,9 @@ class LagoraRTC
 
     /**
      * @param int $seconds
-     * @return LagoraRTC
+     * @return LagoraRTM
      */
-    public function setSeconds(int $seconds): LagoraRTC
+    public function setSeconds(int $seconds): LagoraRTM
     {
         $this->seconds = $seconds;
 
@@ -102,7 +103,7 @@ class LagoraRTC
      * @return $this
      * @throws Exception
      */
-    public function getToken() : LagoraRTC
+    public function getToken() : LagoraRTM
     {
         if (empty($this->channelName)) {
             throw InvalidChannelNameException::invalidChannelName($this->channelName);
@@ -111,14 +112,7 @@ class LagoraRTC
         $currentTimestamp = (new \DateTime("now", new \DateTimeZone(config('app.timezone'))))->getTimestamp();
         $privilegeExpiredTs = $currentTimestamp + $expireInSeconds;
 
-        $this->token = RtcTokenBuilder::buildTokenWithUid(
-            $this->app_id,
-            $this->app_certificate,
-            $this->channelName,
-            $this->userID,
-            $this->role,
-            $privilegeExpiredTs
-        );
+        $this->token = RtmTokenBuilder::buildToken($this->app_id, $this->app_certificate, $this->channelName, $this->role, $privilegeExpiredTs);
 
         return $this;
     }
