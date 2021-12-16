@@ -1,8 +1,6 @@
 # A Laravel wrapper for Agora Services
 
-[![Latest Version on Packagist](https://img.shields.io/packagist/v/webtamizhan/lagora.svg?style=flat-square)](https://packagist.org/packages/webtamizhan/lagora)
-[![GitHub Tests Action Status](https://img.shields.io/github/workflow/status/webtamizhan/lagora/run-tests?label=tests)](https://github.com/webtamizhan/lagora/actions?query=workflow%3Arun-tests+branch%3Amain)
-[![GitHub Code Style Action Status](https://img.shields.io/github/workflow/status/webtamizhan/lagora/Check%20&%20fix%20styling?label=code%20style)](https://github.com/webtamizhan/lagora/actions?query=workflow%3A"Check+%26+fix+styling"+branch%3Amain)
+[![Latest Version on Packagist](https://img.shields.io/github/v/release/webtamizhan/lagora.svg?style=flat-square)](https://github.com/webtamizhan/lagora/releases)
 [![Total Downloads](https://img.shields.io/packagist/dt/webtamizhan/lagora.svg?style=flat-square)](https://packagist.org/packages/webtamizhan/lagora)
 
 ## Installation
